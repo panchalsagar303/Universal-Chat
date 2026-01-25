@@ -1,0 +1,15 @@
+# Global System Files
+.DS_Store
+
+# Python / Django
+backend-django/venv/
+backend-django/__pycache__/
+*.pyc
+backend-django/db.sqlite3
+
+# Go
+backend-golang/universal-chat  # The binary name
+
+# Secrets (CRITICAL: MUST BE IN ROOT)
+.env
+*.env
