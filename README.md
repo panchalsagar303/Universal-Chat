@@ -1,93 +1,104 @@
-# Universal Chat
+# Universal Chat 🚀
 
-Universal Chat is a modular, extensible chat application designed to support multiple chat models, integrations, and deployment targets. It provides a flexible foundation for building conversational interfaces, experimenting with LLMs, and integrating with third-party services.
+A high-performance, real-time chat application demonstrating a **Hybrid Backend Architecture**.
 
-## Features
+This project combines the rapid development of **Django** with the high concurrency of **Go (Golang)**, unified by a shared **PostgreSQL** database and a modern **Next.js** frontend.
 
-- Modular architecture to plug different models or backends
-- Support for multiple modalities (text, images, attachments)
-- Simple REST and/or WebSocket APIs for real-time interaction
-- Environment-based configuration for providers and API keys
-- Example integrations and starter front-end
+![License](https://img.shields.io/badge/license-MIT-blue)
+![Status](https://img.shields.io/badge/status-active-success)
 
-## Getting Started
+## 🏗 System Architecture
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
 
-Prerequisites
 
-- Git
-- Node.js (>= 16) and npm or yarn
-- (Optional) Python 3.8+ if parts of the repo include Python helpers
+The system uses a "Best Tool for the Job" approach:
+1.  **Django (Python):** Handles User Authentication (JWT), Admin Panel, and Database Schema Migrations.
+2.  **Go (Golang):** Handles the WebSocket Hub, managing real-time connections and broadcasting messages with low latency.
+3.  **PostgreSQL:** The shared source of truth. Django creates the tables; Go writes directly to them for speed.
+4.  **Next.js (React):** A modern, type-safe frontend that connects to Django for Login and Go for Chatting.
 
-Installation
+## 🛠 Tech Stack
 
-1. Clone the repository:
+- **Frontend:** Next.js 14 (App Router), TypeScript, Tailwind CSS, Axios.
+- **Auth Backend:** Django Rest Framework, SimpleJWT.
+- **Real-Time Backend:** Go (Gorilla WebSockets), `lib/pq` driver.
+- **Database:** PostgreSQL.
+- **DevOps:** Monorepo structure.
 
-   git clone https://github.com/AnilKumarSingh9856/Universal-Chat-.git
-   cd Universal-Chat-
+## 🚀 Getting Started
 
-2. Install dependencies (example for a Node.js backend):
+### Prerequisites
+- Node.js (v20+)
+- Python (v3.10+)
+- Go (v1.21+)
+- PostgreSQL
 
-   npm install
-   # or
-   yarn install
+### 1. Database Setup
+Create a PostgreSQL database and user:
+```sql
+CREATE DATABASE database_name;
+CREATE USER user_name WITH PASSWORD 'user_password'; 
+GRANT ALL PRIVILEGES ON DATABASE database_name TO user_name;
 
-3. Create a .env file from the example and set required API keys and configuration:
+```
 
-   cp .env.example .env
-   # Edit .env and add keys for OPENAI_API_KEY, PROVIDER_X_KEY, etc.
+### 2. Django Setup (Auth & Schema)
 
-Running the app
+```bash
+cd backend-django
+python -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+# Create Tables in Postgres
+python manage.py migrate
+# Create Admin User
+python manage.py createsuperuser
+# Run Server
+python manage.py runserver
 
-- Development
+```
 
-  npm run dev
+### 3. Go Setup (WebSockets)
 
-- Production
+```bash
+cd backend-golang
+# Create .env file with: DB_CONN_STRING=postgres://postgres:postgres@127.0.0.1:5432/chat_db?sslmode=disable
+go run .
 
-  npm run build
-  npm start
+```
 
-API
+### 4. Frontend Setup (UI)
 
-The repository exposes a simple HTTP/REST API and a WebSocket endpoint for real-time chat. Consult the `docs/` directory or the source files in `src/` for detailed API docs and example requests.
+```bash
+cd frontend
+npm install
+npm run dev
 
-Configuration
+```
 
-All provider keys and runtime configuration are read from environment variables. Example variables:
+## 🔄 How It Works
 
-- OPENAI_API_KEY - OpenAI API key
-- PROVIDER_X_KEY - Third-party provider key
-- PORT - port to run the server on (default: 3000)
+1. **Login:** User logs in via Next.js → Django returns a JWT Access Token.
+2. **Connect:** Next.js opens a WebSocket connection to Go, passing the Token.
+3. **Verify:** Go verifies the JWT signature using the shared Secret Key.
+4. **Chat:**
+* User sends a message.
+* Go inserts the message directly into PostgreSQL.
+* Go broadcasts the message to all connected clients.
 
-Contributing
 
-Contributions are welcome! Please follow these steps:
+5. **History:** Django Admin Interface allows viewing and managing all chat history.
 
-1. Fork the repository
-2. Create a feature branch: `git checkout -b feature/my-feature`
-3. Commit your changes: `git commit -m "Add my feature"`
-4. Push to the branch: `git push origin feature/my-feature`
-5. Open a pull request describing your changes
+## 📂 Project Structure
 
-Please follow the existing code style and add tests for new features where appropriate.
+```
+universal-chat/
+├── backend-django/   # Auth, Models, Admin Panel
+├── backend-golang/   # WebSocket Hub, High-perf networking
+└── frontend/         # Next.js App, Chat UI
 
-Project Structure (example)
+```
 
-- src/ - application source code
-- docs/ - documentation and API examples
-- examples/ - example integrations and usage samples
-- .env.example - example environment variables file
+```
 
-License
-
-This project is provided under the MIT License - see the LICENSE file for details.
-
-Support
-
-If you have questions or issues, please open an issue on the repository.
-
-----
-
-Generated by GitHub Copilot assistant for repository initialization.
+```
