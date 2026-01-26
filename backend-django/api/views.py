@@ -1,3 +1,9 @@
-from django.shortcuts import render
+from rest_framework import generics, permissions
+from .models import Message
+from .serializers import MessageSerializer
 
-# Create your views here.
+class MessageListView(generics.ListAPIView):
+    # Get all messages, ordered by time
+    queryset = Message.objects.all().order_by('timestamp')
+    serializer_class = MessageSerializer
+    permission_classes = [permissions.IsAuthenticated]

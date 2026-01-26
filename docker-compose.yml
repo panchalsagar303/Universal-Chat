@@ -1,0 +1,62 @@
+version: '3.8'
+
+services:
+  # 1. Database
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: mysecretpassword
+      POSTGRES_DB: chat_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  # 2. Django Backend (Auth)
+  backend-django:
+    build: ./backend-django
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./backend-django:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    # NEW: Shared Secret & DB Config
+    environment:
+      - DJANGO_SECRET_KEY=my-super-secret-key-123
+      - DB_HOST=db
+      - DB_NAME=chat_db
+      - DB_USER=postgres
+      - DB_PASS=mysecretpassword
+
+  # 3. Go Backend (Real-time)
+  backend-golang:
+    build: ./backend-golang
+    environment:
+      # Note: 'db' here refers to the service name defined above
+      DB_CONN_STRING: postgres://postgres:mysecretpassword@db:5432/chat_db?sslmode=disable
+      # NEW: Must match Django's key exactly
+      JWT_SECRET: my-super-secret-key-123
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+
+  # 4. Frontend (Next.js)
+  frontend:
+    build: ./frontend
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      - backend-django
+      - backend-golang
+
+volumes:
+  postgres_data:

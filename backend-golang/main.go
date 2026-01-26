@@ -9,8 +9,7 @@ import (
 
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/gorilla/websocket"
-	"github.com/joho/godotenv"
-	_ "github.com/lib/pq" // <--- Import the Driver
+	_ "github.com/lib/pq"
 )
 
 // GLOBAL DATABASE VARIABLE
@@ -23,27 +22,22 @@ var upgrader = websocket.Upgrader{
 }
 
 type UserClaims struct {
-	UserID string `json:"user_id"`
+	UserID string `json:"user_id"` // <--- FIXED: CHANGED BACK TO STRING
 	jwt.RegisteredClaims
 }
 
 func main() {
-	// 1. Load .env
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
+	// 1. Get Connection String
+	connStr := os.Getenv("DB_CONN_STRING")
 
 	// 2. Connect to Database
-	connStr := os.Getenv("DB_CONN_STRING")
-	var dbErr error
-	db, dbErr = sql.Open("postgres", connStr)
-	if dbErr != nil {
-		log.Fatal("Failed to open DB:", dbErr)
+	var err error
+	db, err = sql.Open("postgres", connStr)
+	if err != nil {
+		log.Fatal("Failed to open DB:", err)
 	}
 	defer db.Close()
 
-	// Test the connection
 	if err = db.Ping(); err != nil {
 		log.Fatal("Failed to connect to DB:", err)
 	}

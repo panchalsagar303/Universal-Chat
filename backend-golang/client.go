@@ -1,6 +1,8 @@
 package main
 
 import (
+	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -24,7 +26,13 @@ type Client struct {
 	userID string
 }
 
-// readPump pumps messages from the websocket connection to the hub.
+type BroadcastMessage struct {
+	Content   string `json:"content"`
+	Username  string `json:"username"`
+	UserID    string `json:"user_id"`
+	Timestamp string `json:"timestamp"`
+}
+
 func (c *Client) readPump() {
 	defer func() {
 		c.hub.unregister <- c
@@ -35,7 +43,7 @@ func (c *Client) readPump() {
 	c.conn.SetPongHandler(func(string) error { c.conn.SetReadDeadline(time.Now().Add(pongWait)); return nil })
 
 	for {
-		_, message, err := c.conn.ReadMessage()
+		_, messageBytes, err := c.conn.ReadMessage()
 		if err != nil {
 			if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway, websocket.CloseAbnormalClosure) {
 				log.Printf("error: %v", err)
@@ -43,18 +51,35 @@ func (c *Client) readPump() {
 			break
 		}
 
-		// --- SAVE TO DB ---
-		// We insert the message into the 'api_message' table
-		// $1 is UserID, $2 is the Message Content
+		messageContent := string(messageBytes)
+
+		// 1. Get Username from DB
+		var username string
 		if db != nil {
-			_, dbErr := db.Exec("INSERT INTO api_message (user_id, content, timestamp) VALUES ($1, $2, NOW())", c.userID, string(message))
+			// FIXED: Query 'account_customuser' instead of 'auth_user'
+			err := db.QueryRow("SELECT username FROM account_customuser WHERE id=$1", c.userID).Scan(&username)
+			if err != nil {
+				log.Printf("Error finding username for ID %s: %v", c.userID, err)
+				username = "Unknown"
+			}
+
+			// 2. Save message to Postgres
+			_, dbErr := db.Exec("INSERT INTO api_message (user_id, content, timestamp) VALUES ($1, $2, NOW())", c.userID, messageContent)
 			if dbErr != nil {
 				log.Printf("Error saving to DB: %v", dbErr)
 			}
 		}
-		// ------------------
 
-		c.hub.broadcast <- message
+		// 3. Create JSON Object
+		msgObj := BroadcastMessage{
+			Content:   messageContent,
+			Username:  username,
+			UserID:    c.userID,
+			Timestamp: time.Now().Format(time.RFC3339),
+		}
+
+		jsonBytes, _ := json.Marshal(msgObj)
+		c.hub.broadcast <- jsonBytes
 	}
 }
 
@@ -98,31 +123,38 @@ func serveWs(hub *Hub, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	secret := []byte(os.Getenv("DJANGO_SECRET"))
-	token, err := jwt.ParseWithClaims(tokenString, &UserClaims{}, func(token *jwt.Token) (interface{}, error) {
-		return secret, nil
+	// 1. Validate Token
+	claims := &UserClaims{}
+	token, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+		}
+		secret := os.Getenv("JWT_SECRET")
+		if secret == "" {
+			return nil, fmt.Errorf("JWT_SECRET missing")
+		}
+		return []byte(secret), nil
 	})
 
 	if err != nil || !token.Valid {
+		log.Printf("❌ Connection rejected: %v", err)
 		http.Error(w, "Unauthorized", http.StatusUnauthorized)
 		return
 	}
 
-	claims, ok := token.Claims.(*UserClaims)
-	if !ok {
-		http.Error(w, "Invalid Claims", http.StatusUnauthorized)
-		return
-	}
-
+	// 2. Upgrade Connection
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
-		log.Println(err)
+		log.Println("Upgrade error:", err)
 		return
 	}
 
+	// Note: We use claims.UserID directly because it is now a string again
 	client := &Client{hub: hub, conn: conn, send: make(chan []byte, 256), userID: claims.UserID}
 	client.hub.register <- client
 
 	go client.writePump()
 	go client.readPump()
+
+	log.Printf("✅ User %s Connected!", claims.UserID)
 }
